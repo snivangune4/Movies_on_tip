@@ -16,7 +16,7 @@ const MoviesList =(props: Props) => {
 
     const [status, setStatus ] = useState<LoadingStatus> ('LOADING');
 
-    const [movies, setMovies ] = useState<IMovie[] | null> ( null );
+    const [movies, setMovies ] = useState<IMovie[] > ( [] as IMovie[] );
 
     const [error, setError ] = useState<Error | null> ( null );
 
@@ -35,7 +35,25 @@ const MoviesList =(props: Props) => {
             fetchMovies();
         },[]
     ) ;
-           
+    
+    const [searchKey, setSearchKey ] = useState ( "" );
+    const [filteredMovies, setFilteredMovies ] = useState<IMovie[] | null> ( [] as IMovie[] );
+
+    const searchbarStyle = {
+        widht:'250px'
+     };
+
+    const filteredMovieList =() => {
+        const filteredMovies = movies.filter( movie => 
+            movie.title.includes( searchKey ) );
+        setFilteredMovies(filteredMovies)
+    };
+
+    useEffect(
+        filteredMovieList,
+        [searchKey, movies]
+    )
+    
     let el;
 
     switch( status ){
@@ -49,18 +67,27 @@ const MoviesList =(props: Props) => {
         break;
         case 'LOADED':
             el = (
-                <Row xs={2} md={4} lg={6}>
+                <>
+                <input 
+                className="form-control my-3"
+                value={searchKey}
+                placeholder = 'Enter movie to search'
+                onChange = {( event ) => setSearchKey( event.target.value )}
+                style={{width:'200px', marginLeft: 'auto'}}
+                ></input>
+                
+                <Row xs={2} md={4} lg={5}>
                     {
-                        movies?.map(
+                        filteredMovies?.map(
                             movie => (
                                 <Col key={movie.id} className='d-flex align-items-fetch my-2'>
-                                    <MoviesListItem movie={movie}              
-                                    />
+                                    <MoviesListItem movie={movie} />
                                 </Col>
                             )
                         )
                     }
                 </Row>
+                </>
             );
         break;
         case 'ERROR_LOADING':
