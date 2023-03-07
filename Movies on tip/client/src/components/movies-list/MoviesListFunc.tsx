@@ -20,6 +20,10 @@ const MoviesList =(props: Props) => {
 
     const [error, setError ] = useState<Error | null> ( null );
 
+    const [searchKey, setSearchKey ] = useState ( "" );
+    
+    const [filteredMovies, setFilteredMovies ] = useState<IMovie[] | null> ( [] as IMovie[] );
+
     useEffect( 
         () => { 
             const fetchMovies = async () => {
@@ -35,13 +39,6 @@ const MoviesList =(props: Props) => {
             fetchMovies();
         },[]
     ) ;
-    
-    const [searchKey, setSearchKey ] = useState ( "" );
-    const [filteredMovies, setFilteredMovies ] = useState<IMovie[] | null> ( [] as IMovie[] );
-
-    const searchbarStyle = {
-        widht:'250px'
-     };
 
     const filteredMovieList =() => {
         const filteredMovies = movies.filter( movie => 
